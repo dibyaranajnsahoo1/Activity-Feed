@@ -11,15 +11,19 @@
 // heartbeat ping/pong detection, and clean unmount teardown.
 
 import { useEffect, useState, useRef } from 'react';
+// onMessage is held in a ref so updating it never triggers a reconnect
 import { WS_URL } from '../config/urls';
 
 const MAX_RETRIES = 5;
 
 export function useWebSocket(tenantId, onMessage) {
   const [status, setStatus] = useState('disconnected');
-  const retryCount = useRef(0);
-  const timerRef  = useRef(null);
-  const socketRef = useRef(null);
+  const retryCount   = useRef(0);
+  const timerRef     = useRef(null);
+  const socketRef    = useRef(null);
+  // Keep the latest callback in a ref — avoids adding it to the effect dep array
+  const onMessageRef = useRef(onMessage);
+  useEffect(() => { onMessageRef.current = onMessage; }, [onMessage]);
 
   useEffect(() => {
     if (!tenantId) return undefined;
@@ -40,7 +44,7 @@ export function useWebSocket(tenantId, onMessage) {
       };
 
       ws.onmessage = (evt) => {
-        try { onMessage(JSON.parse(evt.data)); } catch { /* ignore bad frames */ }
+        try { onMessageRef.current(JSON.parse(evt.data)); } catch { /* ignore bad frames */ }
       };
 
       ws.onclose = (evt) => {
@@ -63,11 +67,16 @@ export function useWebSocket(tenantId, onMessage) {
     return () => {
       destroyed = true;
       clearTimeout(timerRef.current);
-      if (socketRef.current) socketRef.current.close(1000);
+      const ws = socketRef.current;
+      // Only close if the socket is still CONNECTING(0) or OPEN(1).
+      // Calling close() on an already-CLOSING/CLOSED socket is a no-op but
+      // closing a CONNECTING socket is what produces the browser warning.
+      if (ws && ws.readyState < WebSocket.CLOSING) ws.close(1000);
     };
-  // onMessage is listed as a dep but is stable because every caller wraps
-  // it in useCallback — so this effect only re-runs on real tenant changes.
-  }, [tenantId, onMessage]);
+  // onMessage is intentionally omitted — it is accessed through onMessageRef
+  // so that updating the callback never causes a reconnect cycle.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tenantId]);
 
   return { status };
 }

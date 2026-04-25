@@ -51,7 +51,11 @@ export default function App() {
     return () => {
       destroyed = true;
       clearTimeout(timerRef.current);
-      if (wsRef.current) wsRef.current.close(1000);
+      // Guard: only close if CONNECTING(0) or OPEN(1) — avoids the
+      // "WebSocket closed before connection established" browser warning.
+      if (wsRef.current && wsRef.current.readyState < WebSocket.CLOSING) {
+        wsRef.current.close(1000);
+      }
     };
   }, [tenantId]);
 
