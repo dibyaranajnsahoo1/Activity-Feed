@@ -2,15 +2,9 @@
 // Centralised HTTP layer. All requests go through here so base-URL and
 // tenant-header injection happen in one place.
 
-// Use environment variable or default to production URL
-const getBaseUrl = () => {
-  const envUrl = process.env.REACT_APP_API_URL_PROD || process.env.REACT_APP_API_URL;
-  if (envUrl) return envUrl;
-  // Default: use https:// for production, http:// for local
-  return 'https://activity-feed-dfpx.onrender.com';
-};
+import { API_URL } from '../config/urls';
 
-const BASE_URL = getBaseUrl();
+const BASE_URL = API_URL;
 
 async function request(path, options = {}) {
   const url = `${BASE_URL}${path}`;

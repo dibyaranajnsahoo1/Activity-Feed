@@ -5,6 +5,7 @@ import ActivityFeed      from './components/ActivityFeed';
 import RightPanel        from './components/RightPanel';
 import SystemDesignModal from './components/SystemDesignModal';
 import activityApi       from './api/activityApi';
+import { WS_URL }        from './config/urls';
 import './App.css';
 
 // ─── App ──────────────────────────────────────────────────────────────────────
@@ -12,8 +13,6 @@ import './App.css';
 // wsStatus is tracked here so Navbar and RightPanel stay in sync.
 // A lightweight WS connection in Navbar is for status display only;
 // the feed's own useWebSocket in ActivityFeed does the actual data work.
-
-const WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:5000';
 
 export default function App() {
   const [tenantId,      setTenantId]      = useState('tenant-acme');
