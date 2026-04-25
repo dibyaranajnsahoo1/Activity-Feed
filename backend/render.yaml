@@ -6,17 +6,4 @@ services:
     plan: free
     buildCommand: npm install
     startCommand: node src/server.js
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: MONGODB_URI
-        value: mongodb+srv://dibya6371:dibya6371@dmaq.ymuops4.mongodb.net/activityfeed?appName=dmaq
-      - key: PORT
-        value: 10000
-      - key: CORS_ORIGIN
-        value: "*"
-      - key: RATE_LIMIT_WINDOW_MS
-        value: "60000"
-      - key: RATE_LIMIT_MAX
-        value: "100"
     healthCheckPath: /health

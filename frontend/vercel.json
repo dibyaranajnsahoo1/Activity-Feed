@@ -1,9 +1,5 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "framework": "create-react-app",
-  "env": {
-    "REACT_APP_API_URL": "https://activityfeed-backend.onrender.com",
-    "REACT_APP_WS_URL": "wss://activityfeed-backend.onrender.com"
-  }
+  "framework": "create-react-app"
 }
