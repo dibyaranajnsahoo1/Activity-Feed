@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import Navbar            from './components/Navbar';
-import LeftSidebar       from './components/LeftSidebar';
-import ActivityFeed      from './components/ActivityFeed';
-import RightPanel        from './components/RightPanel';
+import Navbar from './components/Navbar';
+import LeftSidebar from './components/LeftSidebar';
+import ActivityFeed from './components/ActivityFeed';
+import RightPanel from './components/RightPanel';
 import SystemDesignModal from './components/SystemDesignModal';
-import activityApi       from './api/activityApi';
-import { WS_URL }        from './config/urls';
+import activityApi from './api/activityApi';
+import { WS_URL } from './config/urls';
 import './App.css';
 
 // ─── App ──────────────────────────────────────────────────────────────────────
@@ -15,29 +15,29 @@ import './App.css';
 // the feed's own useWebSocket in ActivityFeed does the actual data work.
 
 export default function App() {
-  const [tenantId,      setTenantId]      = useState('tenant-acme');
-  const [filters,       setFilters]       = useState({});
+  const [tenantId, setTenantId] = useState('tenant-acme');
+  const [filters, setFilters] = useState({});
   const [showSysDesign, setShowSysDesign] = useState(false);
-  const [wsStatus,      setWsStatus]      = useState('disconnected');
-  const [stats,         setStats]         = useState(null);
-  const [toast,         setToast]         = useState(null);
+  const [wsStatus, setWsStatus] = useState('disconnected');
+  const [stats, setStats] = useState(null);
+  const [toast, setToast] = useState(null);
 
   // Lightweight WS #1: status indicator only (Navbar / RightPanel dot).
   // WS #2 lives inside ActivityFeed → useWebSocket, which handles all feed data.
   // Two connections are intentional: status display is decoupled from data flow.
-  const wsRef    = useRef(null);
+  const wsRef = useRef(null);
   const timerRef = useRef(null);
 
   useEffect(() => {
     let destroyed = false;
-    let retries   = 0;
+    let retries = 0;
 
     function connect() {
       if (destroyed) return;
       setWsStatus('connecting');
       const ws = new WebSocket(`${WS_URL}/ws?tenantId=${encodeURIComponent(tenantId)}`);
       wsRef.current = ws;
-      ws.onopen  = () => { if (!destroyed) { setWsStatus('connected'); retries = 0; } };
+      ws.onopen = () => { if (!destroyed) { setWsStatus('connected'); retries = 0; } };
       ws.onclose = (e) => {
         setWsStatus('disconnected');
         if (!destroyed && e.code !== 1000 && e.code !== 4001 && retries < 5) {
@@ -129,13 +129,13 @@ export default function App() {
           />
         </div>
 
-        <footer className="app-footer">
+        {/* <footer className="app-footer">
           <span>MongoDB cursor pagination</span><span className="dot">·</span>
           <span>WebSocket real-time</span><span className="dot">·</span>
           <span>Optimistic UI + rollback</span><span className="dot">·</span>
           <span>Async queue</span><span className="dot">·</span>
           <span>Tenant isolation</span>
-        </footer>
+        </footer> */}
       </div>
 
       {showSysDesign && <SystemDesignModal onClose={() => setShowSysDesign(false)} />}
