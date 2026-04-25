@@ -78,8 +78,7 @@ export function useWebSocket(tenantId, onMessage) {
     };
   // onMessage is intentionally omitted — it is accessed through onMessageRef
   // so that updating the callback never causes a reconnect cycle.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tenantId]);
+  }, [tenantId]); // eslint-disable-line
 
   return { status };
 }
