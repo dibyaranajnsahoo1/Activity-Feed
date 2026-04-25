@@ -12,7 +12,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 
-const WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:5000';
+// Use wss:// for production (HTTPS), ws:// for local development
+const WS_URL = process.env.NODE_ENV === 'production' 
+  ? (process.env.REACT_APP_WS_URL_PROD || 'wss://activity-feed-dfpx.onrender.com')
+  : (process.env.REACT_APP_WS_URL || 'ws://localhost:5000');
 const MAX_RETRIES = 5;
 
 export function useWebSocket(tenantId, onMessage) {

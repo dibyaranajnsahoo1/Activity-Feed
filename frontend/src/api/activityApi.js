@@ -2,7 +2,10 @@
 // Centralised HTTP layer. All requests go through here so base-URL and
 // tenant-header injection happen in one place.
 
-const BASE_URL = process.env.REACT_APP_API_URL || '';
+// Use https:// for production (HTTPS), http:// for local development
+const BASE_URL = process.env.NODE_ENV === 'production'
+  ? (process.env.REACT_APP_API_URL_PROD || 'https://activity-feed-dfpx.onrender.com')
+  : (process.env.REACT_APP_API_URL || 'http://localhost:5000');
 
 async function request(path, options = {}) {
   const url = `${BASE_URL}${path}`;
