@@ -44,7 +44,7 @@ export default function App() {
           timerRef.current = setTimeout(connect, Math.min(1000 * 2 ** retries++, 20000));
         }
       };
-      ws.onerror = () => ws.close();
+      ws.onerror = () => { /* browser fires onclose automatically; reconnect handled there */ };
     }
 
     connect();

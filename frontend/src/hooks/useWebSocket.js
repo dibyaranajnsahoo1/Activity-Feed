@@ -59,7 +59,10 @@ export function useWebSocket(tenantId, onMessage) {
         timerRef.current = setTimeout(connect, delay);
       };
 
-      ws.onerror = () => ws.close();
+      // Do NOT call ws.close() here — the browser fires onclose automatically
+      // after onerror. Calling close() on a CONNECTING socket is what produces
+      // the "WebSocket closed before connection established" console warning.
+      ws.onerror = () => { /* onclose will fire next; reconnect logic lives there */ };
     }
 
     connect();
