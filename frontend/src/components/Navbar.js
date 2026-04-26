@@ -17,10 +17,6 @@ function Navbar({ wsStatus, tenantId }) {
           <span className="nav-name">ActivityFeed</span>
           <span className="nav-sub">Tenant-Isolated Real-time Feed</span>
         </div>
-        <div className="nav-badges">
-          <span className="badge-mern">MERN</span>
-          <span className="badge-sde">SDE I</span>
-        </div>
       </div>
 
       {/* Center — current tenant */}
